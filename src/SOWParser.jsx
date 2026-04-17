@@ -48,12 +48,13 @@ const SKUS = [
   { name: "Noodle:Dialogue Licensing Fee", code: "TECH-ANN-DLG-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "Noodle:Companion", code: "TECH-ANN-CMPN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "Noodle:Manage", code: "TECH-ANN-MNG", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle:Manage (Institutional Analytics)", code: "TECH-LCH-MNG-IA", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
+  { name: "Noodle:Manage (Institutional Analytics)", code: "TECH-ANN-MNG-IA", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "24/7 Support Desk", code: "TECH-ANN-SUPP", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "Marketing & Enrollment Consulting", code: "MKT-CNSL-M&E", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "Learning Design Consulting", code: "LD-CNSL-LD", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "Student Support Consulting", code: "SSP-CNSL-SSP", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Student Support", startLogic: "Billing Date", endLogic: "SOW End Date" },
   { name: "Tech Consulting", code: "TECH-CNSL-TECH", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
+  { name: "Performance Based Partnership", code: "MKT-ANN-PERF", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
 ];
 
 const EXTRACT_PROMPT = `You are a financial data extraction assistant for a company that sells education services.
