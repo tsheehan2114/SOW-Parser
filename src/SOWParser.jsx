@@ -2,66 +2,71 @@ import { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 
 const SKUS = [
-  { name: "Strategic Market Research", code: "MKT-LCH-MSRCA", feeType: "One-Time", revRec: "Milestone", owner: "David C", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Unified Discovery", code: "MKT-LCH-UD", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Go-To-Market Strategy & Positioning", code: "MKT-LCH-GTM", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Creative Concepting", code: "MKT-LCH-CC", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Website Strategy and Development", code: "MKT-LCH-WEBDEV", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Recruitment Marketing Setup", code: "MKT-LCH-RMSET", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Retention Marketing Setup", code: "MKT-ANN-RETEN-IMP", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Photo & Video Shoot (One-Day)", code: "MKT-LCH-PHOTO", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Recruitment Marketing (Annual)", code: "MKT-ANN-RMANN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Program Maturity Assets", code: "MKT-ANN-PMA", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Retention Marketing", code: "MKT-ANN-RETEN-ANN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Public Relations", code: "MKT-ANN-PUB-REL", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Social Media Engagement", code: "MKT-ANN-SOCIAL", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Media Campaigns & Placement", code: "MKT-ANN-MEDIA", feeType: "Annual", revRec: "Usage - Spend", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Media Management Fee", code: "MKT-ANN-MEDIA%", feeType: "Annual", revRec: "Usage - Spend", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Marketing & Enrollment Travel", code: "MKT-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Transcript Services", code: "ENR-ANN-TRAN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Enrollment", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Enrollment Advisors", code: "ENR-ANN-ADVISE", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Enrollment", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Program Design & Discovery", code: "LD-LCH-PRODES", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Essentials Course Builds", code: "LD-LCH-ESS", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Course Maintenance", code: "LD-LCH-MAINT", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Orientation Course", code: "LD-LCH-ORIEN", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "On-Site Video", code: "LD-LCH-VIDEO", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Media Credits", code: "LD-LCH-MECRED", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Term Prep", code: "LD-ANN-TRMPRP", feeType: "One-Time", revRec: "Usage - Spend", owner: "Sushyla", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Faculty Support", code: "LD-ANN-FCLTSP", feeType: "Annual", revRec: "Straight Line", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Course Refresh", code: "LD-LCH-EREF", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle:Dialogue Faculty Training", code: "LD-LCH-TRAIN", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Student Support Coaching", code: "SSP-ANN-COACH", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Student Support", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Placement Services", code: "PLC-LCH-LVL", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Placement", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle Learning Platform Licensing Fee", code: "TECH-ANN-NLP-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle Learning Platform Updated Tier Licensing Fee", code: "TECH-ANN-NLP-LIC-UPD", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle Learning Platform Discovery", code: "TECH-LCH-NLP-DISC", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Noodle Learning Platform LMS Integration", code: "TECH-LCH-NLP-LMSINT", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Noodle Moodle LMS", code: "TECH-ANN-NLP-MOODLE", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle Learning Platform CMS Integration", code: "TECH-LCH-NLP-CMSINT", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "NLP Merchant of Record", code: "TECH-ANN-NLP-MOR", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "N:Engage CMS", code: "TECH-ANN-ENG-CMS", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "N:Engage AI Standalone Implementation", code: "TECH-LCH-ENG-AI-IMP", feeType: "One-Time", revRec: "Milestone", owner: "David D", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "N:Engage AI Standalone Licensing Fee", code: "TECH-ANN-ENG-AI-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "GEMS One-Time Integration", code: "TECH-LCH-GEMS-INT", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "GEMS Per Student Fee", code: "TECH-ANN-GEMS-STU", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "N:Engage CRM", code: "TECH-ANN-ENG-CRM-CENT", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "N:Engage CRM Lifelong Learning Setup", code: "TECH-LCH-ENG-CRM-IMP", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Noodle:Manage (Institutional Analytics)", code: "TECH-ANN-MNG-IA", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle:Dialogue Implementation", code: "TECH-LCH-DLG-IMP", feeType: "One-Time", revRec: "Milestone", owner: "David D", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Noodle:Dialogue Licensing Fee", code: "TECH-ANN-DLG-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle:Companion", code: "TECH-ANN-CMPN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Noodle:Manage", code: "TECH-ANN-MNG", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Tuition Calculator", code: "TECH-ANN-TUI-CALC-ANN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Tuition Calculator Setup", code: "TECH-LCH-TUI-CALC-IMP", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
-  { name: "Slate Consulting", code: "TECH-LCH-SLATE", feeType: "One-Time", revRec: "Straight Line", owner: "David D", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Marketing & Enrollment Consulting", code: "MKT-CNSL-M&E", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Learning Design Consulting", code: "LD-CNSL-LD", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Learning Design", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Student Support Consulting", code: "SSP-CNSL-SSP", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Student Support", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Tech Consulting", code: "TECH-CNSL-TECH", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Performance Based Partnership", code: "MKT-ANN-PERF", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Program Fees", code: "PRT-ANN-PGRM-FEE", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Partner", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "State Authorizations", code: "STR-ANN-STA-AUTH", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Partner", startLogic: "Billing Date", endLogic: "SOW End Date" },
-  { name: "Partner Success Travel", code: "PRT-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Partner", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months" },
+  { name: "Strategic Market Research", code: "MKT-LCH-MSRCA", feeType: "One-Time", revRec: "Milestone", owner: "David C", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Unified Discovery", code: "MKT-LCH-UD", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Go-To-Market Strategy & Positioning", code: "MKT-LCH-GTM", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Creative Concepting", code: "MKT-LCH-CC", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Website Strategy and Development", code: "MKT-LCH-WEBDEV", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Recruitment Marketing Setup", code: "MKT-LCH-RMSET", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Retention Marketing Setup", code: "MKT-ANN-RETEN-IMP", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Photo & Video Shoot (One-Day)", code: "MKT-LCH-PHOTO", feeType: "One-Time", revRec: "Milestone", owner: "Melissa", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Marketing & Enrollment Analysis & Planning", code: "MKT-ANN-MAP", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Recruitment Marketing (Annual)", code: "MKT-ANN-RMANN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Program Maturity Assets", code: "MKT-ANN-PMA", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Retention Marketing", code: "MKT-ANN-RETEN-ANN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Public Relations", code: "MKT-ANN-PUB-REL", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Social Media Engagement", code: "MKT-ANN-SOCIAL", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Media Campaigns & Placement", code: "MKT-ANN-MEDIA", feeType: "Annual", revRec: "Usage - Spend", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Media Management Fee", code: "MKT-ANN-MEDIA%", feeType: "Annual", revRec: "Usage - Spend", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Marketing & Enrollment Travel", code: "MKT-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Transcript Services", code: "ENR-ANN-TRAN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Enrollment Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Enrollment Advisors", code: "ENR-ANN-ADVISE", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Enrollment Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Program Design & Discovery", code: "LD-LCH-PRODES", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Recurring" },
+  { name: "Essentials Course Builds", code: "LD-LCH-ESS", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Course Maintenance", code: "LD-LCH-MAINT", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Orientation Course", code: "LD-LCH-ORIEN", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "On-Site Video", code: "LD-LCH-VIDEO", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Media Credits", code: "LD-LCH-MECRED", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Term Prep", code: "LD-ANN-TRMPRP", feeType: "One-Time", revRec: "Usage - Spend", owner: "Sushyla", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Faculty Support", code: "LD-ANN-FCLTSP", feeType: "Annual", revRec: "Straight Line", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Course Refresh", code: "LD-LCH-EREF", feeType: "One-Time", revRec: "Milestone", owner: "Saskia", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Noodle:Dialogue Faculty Training", code: "LD-LCH-TRAIN", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Learning Design Travel", code: "LD-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Learning Design Consulting", code: "LD-CNSL-LD", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Learning", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Student Support Coaching", code: "SSP-ANN-COACH", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Student Support & Retention", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Student Support Consulting", code: "SSP-CNSL-SSP", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Student Support & Retention", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Student Support Travel", code: "SSP-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Student Support & Retention", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Placement Services", code: "PLC-LCH-LVL", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Placement Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle Learning Platform Licensing Fee", code: "TECH-ANN-NLP-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle Learning Platform Updated Tier Licensing Fee", code: "TECH-ANN-NLP-LIC-UPD", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle Learning Platform Discovery", code: "TECH-LCH-NLP-DISC", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Noodle Learning Platform LMS Integration", code: "TECH-LCH-NLP-LMSINT", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Noodle Moodle LMS", code: "TECH-ANN-NLP-MOODLE", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle Learning Platform CMS Integration", code: "TECH-LCH-NLP-CMSINT", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "NLP Merchant of Record", code: "TECH-ANN-NLP-MOR", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "N:Engage CMS", code: "TECH-ANN-ENG-CMS", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "N:Engage AI Standalone Implementation", code: "TECH-LCH-ENG-AI-IMP", feeType: "One-Time", revRec: "Milestone", owner: "David D", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "N:Engage AI Standalone Licensing Fee", code: "TECH-ANN-ENG-AI-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "GEMS One-Time Integration", code: "TECH-LCH-GEMS-INT", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "GEMS Per Student Fee", code: "TECH-ANN-GEMS-STU", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "N:Engage CRM", code: "TECH-ANN-ENG-CRM-CENT", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "N:Engage CRM Lifelong Learning Setup", code: "TECH-LCH-ENG-CRM-IMP", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Noodle:Manage (Institutional Analytics)", code: "TECH-ANN-MNG-IA", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle:Dialogue Implementation", code: "TECH-LCH-DLG-IMP", feeType: "One-Time", revRec: "Milestone", owner: "David D", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Noodle:Dialogue Licensing Fee", code: "TECH-ANN-DLG-LIC", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle:Companion", code: "TECH-ANN-CMPN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Noodle:Manage", code: "TECH-ANN-MNG", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Tuition Calculator", code: "TECH-ANN-TUI-CALC-ANN", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Tuition Calculator Setup", code: "TECH-LCH-TUI-CALC-IMP", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Non-recurring" },
+  { name: "Slate Consulting", code: "TECH-LCH-SLATE", feeType: "One-Time", revRec: "Straight Line", owner: "David D", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Tech Consulting", code: "TECH-CNSL-TECH", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Tech Travel", code: "TECH-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Additional LLM Tokens", code: "TECH-LCH-TOKEN", feeType: "One-Time", revRec: "Straight Line", owner: "", primaryGroup: "Technology", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Marketing & Enrollment Consulting", code: "MKT-CNSL-M&E", feeType: "One-Time", revRec: "Milestone", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Non-recurring" },
+  { name: "Performance Based Partnership", code: "MKT-ANN-PERF", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Marketing Services", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Program Fees", code: "PRT-ANN-PGRM-FEE", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Partner Success", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "State Authorizations", code: "STR-ANN-STA-AUTH", feeType: "Annual", revRec: "Straight Line", owner: "", primaryGroup: "Strategy", startLogic: "Billing Date", endLogic: "SOW End Date", frequency: "Recurring" },
+  { name: "Partner Success Travel", code: "PRT-LCH-TRVL", feeType: "One-Time", revRec: "Usage - Spend", owner: "", primaryGroup: "Partner Success", startLogic: "Billing Date", endLogic: "Billing Date + 3 Months", frequency: "Recurring" },
 ];
 
 const EXTRACT_PROMPT = `You are a financial data extraction assistant for a company that sells education services.
@@ -125,7 +130,7 @@ Your job is to verify the extraction is complete and accurate by:
 
 Return the corrected complete JSON in exactly the same format. Return ONLY valid JSON, no markdown.`;
 
-const MAIN_COLS = ["School","Primary Group","SKU Name","SKU Code","Billing Frequency","Rev Rec Method","Total Service Amount","Service Period Start Date","Service Period End Date","Owner","Total Billing Periods"];
+const MAIN_COLS = ["School","Primary Group","SKU Name","SKU Code","Frequency","Billing Frequency","Rev Rec Method","Total Service Amount","Service Period Start Date","Service Period End Date","Owner","Total Billing Periods"];
 const MILESTONE_COLS = ["School","SKU Name","SKU Code","Owner","Billing Period #","Billing Period Name","Bill Date","Bill Amount","Service Period Start","Service Period End"];
 const AUDIT_COLS = ["School","SKU Name","SKU Code","Field","AI Extracted Value","Manually Edited Value","Edited At"];
 
@@ -263,6 +268,7 @@ export default function SOWParser() {
 
   const getOwner = (skuCode) => { const { sku } = fuzzyFindSku(skuCode); return sku?.owner || ""; };
   const getPrimaryGroup = (skuCode) => { const { sku } = fuzzyFindSku(skuCode); return sku?.primaryGroup || ""; };
+  const getFrequency = (skuCode) => { const { sku } = fuzzyFindSku(skuCode); return sku?.frequency || ""; };
 
   const handleFile = e => {
     const f = e.target.files[0];
@@ -419,7 +425,7 @@ export default function SOWParser() {
     const wb = XLSX.utils.book_new();
     const mainRows = rows.map(r => {
       const msTotal = (r.milestones || []).reduce((sum, m) => sum + toNumber(m.billAmount), 0);
-      return { "School": meta.school, "Primary Group": getPrimaryGroup(r.skuCode), "SKU Name": r.skuName, "SKU Code": r.skuCode, "Billing Frequency": r.billingFrequency, "Rev Rec Method": r.revRecMethod, "Total Service Amount": msTotal, "Service Period Start Date": r.serviceStartDate, "Service Period End Date": r.serviceEndDate, "Owner": getOwner(r.skuCode), "Total Billing Periods": (r.milestones || []).length };
+      return { "School": meta.school, "Primary Group": getPrimaryGroup(r.skuCode), "SKU Name": r.skuName, "SKU Code": r.skuCode, "Frequency": getFrequency(r.skuCode), "Billing Frequency": r.billingFrequency, "Rev Rec Method": r.revRecMethod, "Total Service Amount": msTotal, "Service Period Start Date": r.serviceStartDate, "Service Period End Date": r.serviceEndDate, "Owner": getOwner(r.skuCode), "Total Billing Periods": (r.milestones || []).length };
     });
     const ws1 = XLSX.utils.json_to_sheet(mainRows, { header: MAIN_COLS });
     ws1["!cols"] = MAIN_COLS.map(c => ({ wch: Math.max(c.length + 2, 14) }));
