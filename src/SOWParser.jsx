@@ -88,6 +88,7 @@ EXTRACTION RULES:
 - Each invoice = its own milestone with its own date and amount.
 - totalServiceAmount = sum of ALL milestones across all years.
 - Only include SKUs explicitly mentioned in the SOW. Do NOT infer or hallucinate line items.
+- ALWAYS use the Rev Rec method from the SKU Catalog above. NEVER override it based on billing structure or number of payments.
 
 Return ONLY valid JSON, no markdown:
 {
@@ -127,6 +128,7 @@ Your job is to verify the extraction is complete and accurate by:
 - Checking that no invoices have been missed, especially in later years (2027, 2028, 2029, etc.) where fewer services appear
 - Correcting any missing line items or milestones
 - Ensuring milestone billAmounts are numbers, not strings
+- ALWAYS use the Rev Rec method from the SKU Catalog. NEVER override it based on billing structure or number of payments.
 
 Return the corrected complete JSON in exactly the same format. Return ONLY valid JSON, no markdown.`;
 
